@@ -23,3 +23,9 @@ For now, this program only cares about one type of game. It throws out any game 
 These settings could easily be adjusted, but I have little reason to do so unless someone specifically asks.
 
 Also note that game data is normalized after parsing in order to remove outliers. You'll probably want to tweak the normalization parameters, since they are currently tailored to my own stats.
+
+## Screenshot ##
+
+![heatmap-time](https://raw.github.com/lukechampine/ljstats/master/heatmap-time.png)
+
+Here's an example heatmap showing my 40-line times over a range of about 2 years. Unfortunately, there are no axis labels; you have to add them yourself. Here, the Y-axis range is 30-150 seconds.
