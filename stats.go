@@ -7,6 +7,7 @@ import (
 	"os"
 )
 
+// processGame extracts and formats values from a game. Note that the "time" value is converted to seconds for easier processing.
 func processGame(game []byte) (line []byte) {
 	var date, timeofday, numblocks, time, rate, keys, keyspiece []byte
 	_, err := fmt.Sscanf(string(game), "on %s at %s\n Played %s tetrominoes in %s (%s\nPressed %s keys (%s",
@@ -31,6 +32,7 @@ func processGame(game []byte) (line []byte) {
 	return append(joined, '\n')
 }
 
+// parse reads the lj-scores.txt data, removes unwanted games, and extracts the desired values, returning them in csv format/
 func parse(data []byte) (lines [][]byte) {
 	// split data into games
 	games := bytes.Split(data, []byte("\r\n\r\n\r\n"))[1:]
@@ -51,6 +53,7 @@ func parse(data []byte) (lines [][]byte) {
 	return
 }
 
+// normalize parses csv lines and removes those with "abnormal" values
 func normalize(lines [][]byte) (normal [][]byte) {
 	// scan values
 	var numblocks, keys int
@@ -77,7 +80,7 @@ func main() {
 		return
 	}
 
-	// create output file
+	// parse args and create output file
 	var outFile *os.File
 	var makeHeatmap bool
 	switch {
@@ -86,19 +89,22 @@ func main() {
 
 	case bytes.HasSuffix([]byte(os.Args[2]), []byte(".csv")):
 		outFile, err = os.Create(os.Args[2])
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
 		makeHeatmap = false
 
 	case bytes.HasSuffix([]byte(os.Args[2]), []byte(".png")):
 		outFile, err = os.Create(os.Args[2])
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
 		makeHeatmap = true
 
 	default:
 		fmt.Println("invalid output file (must be a .csv or .png)")
-		return
-	}
-	// file creation error
-	if err != nil {
-		fmt.Println(err)
 		return
 	}
 

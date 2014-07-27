@@ -10,12 +10,16 @@ import (
 	"time"
 )
 
+// makeDataPoint is a trivial helper function for turning a set of input values into a DataPoint.
+// It exists only to make it easier to change the x and y values of the heatmap.
+// If this step were performed inside csvToPoints, Go would complain about unused variables.
 func makeDataPoint(date, timeofday time.Time, seconds, rate, keyspiece float32, numblocks, keys int) heatmap.DataPoint {
 	x := numblocks
 	y := keyspiece
 	return heatmap.P(float64(x), float64(y))
 }
 
+// csvToPoints reads games in csv format, extracts the desired values, and returns them as a list of DataPoints.
 func csvToPoints(games [][]byte) (points []heatmap.DataPoint) {
 	var (
 		date, timeofday          time.Time
@@ -33,6 +37,8 @@ func csvToPoints(games [][]byte) (points []heatmap.DataPoint) {
 	return
 }
 
+// writeHeatmap generates a png image from the input points and writes it to a file.
+// This is where you can modify the size of the output image, the radius of the dots, etc.
 func writeHeatmap(points []heatmap.DataPoint, file *os.File) {
 	img := heatmap.Heatmap(image.Rect(0, 0, 1024, 768), points, 10, 200, schemes.Classic)
 	png.Encode(file, img)
